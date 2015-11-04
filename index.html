@@ -1,0 +1,1809 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Graph Database: OrientDB</title>
+
+		<meta name="description" content="Graph Database: OrientDB, a short introduction for Java User Group Trentino - Alto Adige Südtirol">
+		<meta name="author" content="Riccardo Tasso">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/monokai_sublime.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>Graph Database: OrientDB</h2>
+					<h3>a short introduction for JUG TAAS</h3>
+					<p>
+						<small>Riccardo Tasso (<a href="http://www.twitter.com/riccardotasso">@riccardotasso</a>)</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>NoSQL Databases</h2>
+					<ul>
+						<li>Not Only SQL</li>
+						<li>simplicity of design (through different data models)</li>
+						<li>horizontal scaling</li>
+						<li>a finer control over availability</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Data Models</h2>
+						<ul>
+							<li>Key Value: <a href="http://redis.io/">redis</a>, <a href="http://www.memcached.org/">memcached</a>, <a href="http://hazelcast.com/use-cases/nosql/">hazelcast</a>, ...</li>
+							<li>Column: <a href="http://cassandra.apache.org/">cassandra</a>, <a href="http://hbase.apache.org/">hbase</a>, ...</li>
+							<li>Document: <a href="">mongodb</a> (json based), <a href="http://exist-db.org/">exists-db</a> (xml based)...</li>
+							<li>tabular, tuple, hosted, multivalue, multimodel, ..., so on and so forth</li>
+							<li>Graph: we'll go straight to them</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Schema or schemaless?</h2>
+						<ul>
+							<li><a href="http://blog.mongodb.org/post/119945109/why-schemaless">Why Schemaless?</a> (2009, Mongodb Blog)</li>
+							<li><a href="http://blog.mongodb.org/post/119945109/why-schemaless">Stop Claiming that you’re Using a Schemaless Database</a> (2014, jOOQ Blog)</li>
+							<li>
+								<a href="http://martinfowler.com/articles/schemaless/">Schemaless data structures</a> (2013, Martin Fowler)
+								<ul>
+									<li>Schemaless ⇒ implicit schema = Bad Thing</li>
+									<li>prefer explicit schema...</li>
+									<li>...but sometimes you do need schemaless approach</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<p>If implicit schema are such a problem</p>
+						<h2>Why do people want schemaless?</h2>
+						<p>(2013, Martin Fowler)</p>
+						<ul>
+							<li>non uniform data: custom fields; non uniform types</li>
+							<li>to avoid schema migration</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Horizontal Scalability</h2>
+						<img src="img/chimera.jpg">
+						<p>the capability of adding a new node to a (distributed) system to improve its performances</p>
+					</section>
+					<section>
+						<h2>CAP Theorem</h2>
+						<p> it is impossible for a distributed computer system to simultaneously provide all three of the following guarantee:</p>
+						<ul>
+							<li><b>Consistency</b>: all nodes see the same data at the same time</li>
+							<li><b>Availability</b>: a guarantee that every request receives a response about whether it succeeded or failed</li>
+							<li><b>Partition tolerance</b>: the system continues to operate despite arbitrary partitioning due to network failures</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Eventual Consistency</h2>
+						<ul>
+							<li><b>strong consistency</b>: after the update completes, any subsequent access will return the updated value</li>
+							<li><b>weak consistency</b>: there may be a <i>inconsistency window</i></li>
+							<li><b>eventually consistency</b>: if no new updates are made to the object, eventually all accesses will return the last updated value</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Further References</h2>
+						<ul>
+							<li><a href="https://en.wikipedia.org/wiki/NoSQL">[Wikipedia] NoSQL</a></li>
+							<li><a href="https://en.wikipedia.org/wiki/CAP_theorem">[Wikipedia] CAP theorem</a></li>
+							<li><a href="http://dl.acm.org/citation.cfm?doid=1435417.1435432">Vogels, W. (2009). "Eventually consistent". Communications of the ACM 52: 40</a></li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+					<h3>What is a graph?</h3>
+					<ul>
+						<li>a set of vertices</li>
+						<li>a set of edges (links) between vertices</li>
+					</ul>
+					<img src="img/mobius_kantor_graph.svg" height="400px"/>
+					<p>graph theory started in the 18th century</p>
+					</section>
+					<section>
+						<h3>Graph in computer science</h3>
+						<img src="img/control_flow_graph.png" height="400px"/>
+						<p>compiler optimizations</p>
+						<p></p>
+					</section>
+					<section>
+						<h3>Graph in telecommunications</h3>
+						<img src="img/computer_network.png" height="400px"/>
+						<p>computer networks (Internet)</p>
+						<p></p>
+					</section>
+					<section>
+						<h3>Graph in Web</h3>
+						<img src="img/web.png" height="400px"/>
+						<p>the WWW (hypertexts)</p>
+						<p></p>
+					</section>
+					<section>
+						<h3>Engineering</h3>
+						<img src="img/pipe_network.jpg" height="400px"/>
+						<p>pipe network analysis</p>
+					</section>
+					<section>
+						<h3>Electrical engineering</h3>
+						<img src="img/circuit_theory.svg"/>
+						<p>circuit theory</p>
+						<p></p>
+					</section>
+					<section>
+						<h3>Linguistics</h3>
+						<img src="img/language_network.png" height="500px"/>
+						<p>language models</p>
+					</section>
+					<section>
+						<h3>Biology</h3>
+						<img src="img/protein_network.png" height="400px"/>
+						<p>protein interaction network</p>
+					</section>
+					<section>
+						<h3>Social Science</h3>
+						<img src="img/social_network.png"/>
+						<p>social networks</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>What is a Graph Database?</h2>
+						<p>Any storage system that provides <b>index-free adjacency</b></p>
+						<p align="right"><a href="http://arxiv.org/abs/1004.1001">The Graph Traversal Pattern</a></p>
+						<p align="right">(Marko Rodriguez, Peter Neubauer, 2010)</p>
+					</section>
+					<section>
+						<h2>What's wrong with JOINS?</h2>
+						<img src="img/rdbms.png"/>
+						<p>let's try selecting pizzas liked by Nicola!</p>
+					</section>
+					<section>
+						<h2>In RDBMS</h2>
+						<ul>
+							<li>given a Person (Nicola)</li>
+							<li>find Nicola (id=10) in <i>likes</i> table: O(log M)</li>
+							<li>find 20 and 30 ('Margherita' and 'Oro') in <i>Pizza</i> table: O(log N)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>In GraphDB</h2>
+						<img src="img/blackboard_pizza.png" height="500px"/>
+						<p class="fragment" data-fragment-index="0">wow, it's easiest to sketch!</p>
+					</section>
+					<section>
+						<h2>In GraphDB</h2>
+						<ul>
+							<li>given a Person (Nicola)</li>
+							<li>follow the first <i>likes</i> link ('Margherita'): O(1)!!!</li>
+							<li class="fragment" data-fragment-index="0">follow the <i>next</i> 'likes' link ('Oro'): O(1)</li>
+							<li class="fragment" data-fragment-index="1">...</li>
+							<li class="fragment" data-fragment-index="2">Nicola is the index to reach Pizzas!</li>
+						</ul>
+					</section>
+					<section>
+						<h2>And now:</h2>
+						<ul>
+							<li class="fragment" data-fragment-index="0">Find a Pizza</li>
+							<li class="fragment" data-fragment-index="1">which is liked by Nicola</li>
+							<li class="fragment" data-fragment-index="2">(or one of his friends)</li>
+							<li class="fragment" data-fragment-index="3">which has at least one ingredient</li>
+							<li class="fragment" data-fragment-index="4">typical of Trentino</li>
+						</ul>
+					</section>
+					<section>
+						<p>With a GraphDB</p>
+						<img src="img/traversal_pizza.png" height="500px"/>
+						<p>Unleash the power of TRAVERSAL!</p>
+					</section>
+					<section>
+						<p>At least with SQL I know how to write it:</p>
+						<pre class="stretch"><code data-trim class="sql">
+SELECT pizza.name
+FROM
+ Person as person
+ JOIN Likes as likes ON person.id = likes.person
+ JOIN Pizza as pizza ON likes.pizza = pizza.id AND
+ JOIN Contains as contains ON pizzza.id = contains.pizza
+ JOIN Ingredient as ingredient ON contains.ingredient = ingredient.id
+ JOIN TypicalOf as typicalOf ON ingredient.id = typicalOf.ingredient
+ JOIN Region as region ON typicalOf.region = region.id
+WHERE region.name = 'taas'
+						</code></pre>
+							<p class="fragment" data-fragment-index="1">but where are Nicola's friends? :(</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Tinkerpop: Blueprints</h2>
+						<img src="img/tinkerpop-blueprints.png"/>
+						<ul>
+							<li>Tinkerpop maintains a Property Graph Model (PGM) interface: <a href="https://github.com/tinkerpop/blueprints/wiki">Blueprints</a></li>
+							<li>Java API</li>
+							<li>vendor agnostic: a JDBC for graph databases!</li>
+							<li>open source license (BSD)</li>
+							<li class="fragment" data-fragment-index="1">now under apache incubator (v3)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Property Graph Model (PGM)</h2>
+						<ul>
+							<li>each vertex has a unique id</li>
+							<li>each vertex is associated to a collection of key-value pairs (the key is always a string)</li>
+							<li>each edge has a unique id</li>
+							<li>each edge has a label</li>
+							<li>each edge is associated to a collection of key-value pairs (the key is always a string)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>DEMO: PGM</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+@Test public void myFirstGraphTest() {
+    Graph graph = new TinkerGraph();
+
+    Vertex nicola = graph.addVertex("nicola");
+    nicola.setProperty("biography",
+    	"A long time ago in galaxy far far away...");
+    nicola.setProperty("experience", 100);
+
+    Vertex cristian = graph.addVertex("cristian");
+    Vertex riccardo = graph.addVertex("riccardo");
+
+    Edge nicolaFriendOfCristian = graph
+    	.addEdge(null, nicola, cristian, "friendOf");
+    Edge nicolaFriendOfRiccardo = nicola
+    	.addEdge("friendOf", riccardo);
+
+    System.out.println(DateTime.parse("2015-02-18"));
+
+    nicolaFriendOfCristian.setProperty("since",
+    	DateTime.parse("2015-02-18"));
+    nicolaFriendOfRiccardo.setProperty("since",
+    	DateTime.parse("2014-02-26"));
+
+    assertEquals(3, size(graph.getVertices()));
+    assertEquals(2, size(graph.getEdges()));
+
+    graph.shutdown();
+
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>DEMO: PGM (2)</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+
+@Test public void complexGraphTest() {
+    Graph graph = new TinkerGraph();
+
+    Vertex nicola = graph.addVertex("nicola");
+
+    nicola.setProperty("presentations", Arrays.asList("mvn", "java8"));
+
+    Map&lt;String, Object&gt; technologies = new HashMap&lt;&gt;();
+    technologies.put("java", 20);
+    technologies.put("sql", 15);
+    nicola.setProperty("technologies", technologies);
+
+    assertEquals(2, size(nicola.getPropertyKeys()));
+
+    graph.shutdown();
+
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>DEMO: PGM (3)</h2>
+						<pre class="stretch"><code data-trim class="java hljs">    @Test
+public void iterateOverMyFirstGraphTest() {
+    Graph graph = new TinkerGraph();
+
+    Vertex nicola = graph.addVertex("nicola");
+    Vertex cristian = graph.addVertex("cristian");
+    Vertex riccardo = graph.addVertex("riccardo");
+
+    Edge nicolaFriendOfCristian = graph
+    	.addEdge(null, nicola, cristian, "friendOf");
+    Edge nicolaFriendOfRiccardo = nicola
+    	.addEdge("friendOf", riccardo);
+    Edge riccardoFriendOfCristian = riccardo
+    	.addEdge("knows", cristian);
+
+    System.out.println("* out degree:");
+    for(Vertex v : graph.getVertices()) {
+        System.out.println(format("%s has %d outgoing edges",
+                v, size(v.getEdges(Direction.OUT))
+        ));
+    }
+
+    System.out.println("* degree:");
+    for(Vertex v : graph.getVertices()) {
+        System.out.println(format("%s's degree: %d",
+                v, size(v.getEdges(Direction.BOTH))
+        ));
+    }
+
+    System.out.println("* list 'friendOf' edges:");
+    for(Edge e : graph.getEdges("label", "friendOf")) {
+        System.out.println(format("%s -> %s",
+                e.getVertex(Direction.OUT),
+                e.getVertex(Direction.IN)
+        ));
+    }
+
+    graph.shutdown();
+
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Blueprints implementations</h2>
+						<ul>
+							<li>TinkerGraph: in-memory</li>
+							<li><a href="http://www.neo4j.com">Neo4j, the World's Leading Graph Database</a></li>
+							<li><a href="http://orientdb.com/orientdb/">OrientDB the 2nd Generation Distributed Graph Database</a></li>
+							<li><a href="http://sparsity-technologies.com/">Sparksee: High-performance human solutions for Extreme Data</a></li>
+							<li><a href="https://bitbucket.org/lambdazen/bitsy/wiki/Home">Bitsy: a small, fast, embeddable, durable in-memory graph database that implements the Blueprints API</a></li>
+							<li><a href="https://www.arangodb.com/">ArangoDB: the multi-model NoSQL database</a></li>
+							<li><a href="http://thinkaurelius.github.io/titan/">Titan: distributed Graph Database</a></li>
+							<li>... (mongodb, elasticsearch, jdbc!)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>More interfaces:</h2>
+						<ul>
+							<li>ReadonlyGraph</li>
+							<li>IndexableGraph: add support for indices</li>
+							<li>TransactionalGraph: add support for transactions (commit/rollback)</li>
+							<li>EventGraph: fire events on graph change</li>
+							<li>BatchGraph: batch insert for performance optimization</li>
+							<li>PartitionGraph: add support for named partitions</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Blueprints utilities</h2>
+						<ul>
+							<li>input/output (GML, GraphML, GraphSON)</li>
+							<li>outplementations: use your own graph library (e.g. <a href="http://jung.sourceforge.net/">Jung</a>) with a graph database under the hood!</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Tinkerpop: Pipes</h2>
+						<img src="img/tinkerpop-pipes.png"/>
+						<p><a href="https://github.com/tinkerpop/pipes/wiki">Pipes</a> is a <b>lazy</b> <a href="https://en.wikipedia.org/wiki/Dataflow_programming">dataflow framework</a> using <a href="https://en.wikipedia.org/wiki/Kahn_process_networks">process graphs</a></p>
+					</section>
+					<section>
+						<h2>DEMO: Pipes</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+@Test public void myFirstPipeTest() {
+
+    List&lt;String&gt; romans = Lists.newArrayList("MMXV", "MCMLXXXIII", "I");
+
+    TransformPipe&lt;String, Integer&gt; romanToInt = new RomanToIntPipe();
+    FilterPipe&lt;Integer&gt; bigInteger = new BigIntegerPipe(1000);
+    TransformPipe&lt;Integer, Integer&gt; makeOdd = new MakeOddPipe();
+
+
+    romanToInt.setStarts(romans);
+    bigInteger.setStarts((Iterable&lt;Integer&gt;) romanToInt);
+    makeOdd.setStarts((Iterable&lt;Integer&gt;) bigInteger);
+
+    while(makeOdd.hasNext()) {
+        System.out.println(makeOdd.next());
+    }
+
+}
+						</code></pre>
+						<p class="fragment" data-fragment-index="1"><b>output:</b> 4031, 3967</p>
+					</section>
+					<section>
+						<h2>Pipes: basic</h2>
+						<ul>
+							<li>a <i>Pipe&lt;S,E&gt;</i> is an implementation of <i>Iterable&lt;E&gt;</i></li>
+							<li>it should have a method void <i>setStarts(Iterable&lt;S&gt;)</i></li>
+							<li>it must implement a method <i>E processNextStart(S start)</i></li>
+							<li class="fragment" data-fragment-index="1">the <i>TransformerPipe</i> emits an output which may be of a different type from the input</li>
+							<li class="fragment" data-fragment-index="2">the <i>FilterPipe</i> emits the input only if it satisfies some condition, otherwise it evaluates the next</li>
+							<li class="fragment" data-fragment-index="3">the <i>SideEffectPipe</i> emit the incoming object unaltered but performs some computation</li>
+						</ul>
+					</section>
+					<section>
+						<h2>DEMO: Pipes (2)</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+@Test public void metaPipeTest() {
+
+    List&lt;String&gt; romans = Lists.newArrayList(&quot;MMXV&quot;, &quot;MCMLXXXIII&quot;, &quot;I&quot;);
+
+    TransformPipe&lt;String, Integer&gt; romanToInt = new RomanToIntPipe();
+    FilterPipe&lt;Integer&gt; bigInteger = new BigIntegerPipe(1000);
+    TransformPipe&lt;Integer, Integer&gt; makeOdd = new MakeOddPipe();
+
+    Pipeline&lt;String, Integer&gt; pipeline =
+    	new Pipeline&lt;&gt;(romanToInt, bigInteger, makeOdd);
+    pipeline.enablePath(true);
+    pipeline.setStarts(romans);
+
+    while(pipeline.hasNext()) {
+        System.out.println(pipeline.next());
+        System.out.println(pipeline.getCurrentPath());
+    }
+
+}
+						</code></pre>
+						<p class="fragment" data-fragment-index="1"><b>output:</b> 4031: [MMXV, 2015, 4031]</p>
+						<p class="fragment" data-fragment-index="2"><b>output:</b> 3967: [MCMLXXXIII, 1983, 3967]</p>
+					</section>
+					<section>
+						<h2>Meta pipes</h2>
+						<ul>
+							<li>Pipeline: a chain of pipes</li>
+							<li>And/Or pipes</li>
+							<li>...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Branch pipes</h2>
+						<ul>
+							<li>IfThenElse</li>
+							<li>LoopPipe</li>
+							<li>CopySplitPipe</li>
+							<li>FairMergePipe</li>
+							<li>ExhaustMergePipe</li>
+					</section>
+					<section>
+						<h2>DEMO: Pipes (3)</h2>
+						<p>How is Pipes related to graphs?</p>
+						<pre class="stretch"><code data-trim class="java hljs">
+@Test public void graphPipeTest() {
+    Graph graph = PizzaGraphFactory.create();
+
+    VerticesVerticesPipe out = new VerticesVerticesPipe(Direction.OUT);
+    PipeFunction&lt;LoopPipe.LoopBundle, Boolean&gt; proceedCondition =
+    new PipeFunction&lt;LoopPipe.LoopBundle, Boolean&gt;() {
+        @Override public Boolean compute(LoopPipe.LoopBundle argument) {
+            Element v = (Element) argument.getObject();
+            return !v.getId().equals("trentino");
+        }
+    };
+    LoopPipe loop = new LoopPipe(out, proceedCondition);
+
+    Pipeline pipeline = new Pipeline(loop);
+    pipeline.enablePath(true);
+    pipeline.setStarts(graph.getVertices("id", "nicola"));
+
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>DEMO: Pipes (3)</h2>
+						<pre><code data-trim class="java hljs">
+LoopPipe loop = new LoopPipe(out, proceedCondition);
+
+Pipeline pipeline = new Pipeline(loop);
+pipeline.enablePath(true);
+pipeline.setStarts(graph.getVertices("id", "nicola"));
+
+while(pipeline.hasNext()) {
+    System.out.println(pipeline.next());
+    System.out.println(pipeline.getCurrentPath());
+}
+						</code></pre>
+					<p class="fragment" data-fragment-index="1">v[trentino]: [v[nicola], v[oro], v[mushroom], v[trentino]]</p>
+					<p class="fragment" data-fragment-index="1">v[trentino]: [v[nicola], v[oro], v[spek], v[trentino]]</p>
+					<p class="fragment" data-fragment-index="1">v[trentino]: [v[nicola], v[riccardo], v[boscaiola], v[mushroom], v[trentino]]</p>
+					</section>
+					<section>
+						<img src="img/back_to_the_future.jpg"/>
+						<p>Okay Doc, bring me back to SQL!</p>
+					</section>
+				</section>
+
+				<section>
+
+					<section>
+						<h2>Tinkerpop: Gremlin</h2>
+						<img src="img/tinkerpop-gremlin.png"/>
+						<p><a href="https://github.com/tinkerpop/gremlin/wiki">Gremlin</a> is a graph traversal language</p>
+					</section>
+
+					<section>
+						<h2>Gremlin: our example</h2>
+						<pre class="stretch"><code data-trim class="groovy">
+rayman@HAL9100 ~/gremlin-groovy-2.6.0 $ bin/gremlin.sh 
+
+         \,,,/
+         (o o)
+-----oOOo-(_)-oOOo-----
+gremlin> g = new TinkerGraph()              
+==>tinkergraph[vertices:0 edges:0]
+gremlin> g.loadGraphML('/tmp/pizza.graphml')
+==>null
+gremlin> 
+gremlin> g.v('nicola').out().loop(1){it.object.id!='trentino'}.path
+==>[v[nicola], v[oro], v[spek], v[trentino]]
+==>[v[nicola], v[oro], v[mushroom], v[trentino]]
+==>[v[nicola], v[riccardo], v[boscaiola], v[mushroom], v[trentino]]
+gremlin> 
+gremlin> g.v('nicola').out().loop(1){it.object.id!='trentino'}
+			.in().in().dedup()
+==>v[oro]
+==>v[boscaiola]
+
+						</code></pre>
+					</section>
+
+					<section>
+						<h2>Gremlin: what is it?</h2>
+						<ul>
+							<li>Gremlin is a Domain Specific Language</li>
+							<li>for writing pipes to work with property graphs</li>
+							<li>implemented in <a href="http://www.groovy-lang.org/">groovy</a></li>
+							<li>has a interesting library of steps (transform, filter, sideEffect, branch)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Gremlin: under the hood</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+
+@Test public void pizzaGremlinJavaTest() {
+    Graph graph = PizzaGraphFactory.create();
+
+    GremlinPipeline pipeline = new GremlinPipeline();
+    pipeline.start(graph.getVertex("nicola"))
+            .as("explore")
+            .out().as("outgoing")
+            .loop("explore", PipesTest.proceedCondition)
+            .path();
+
+    while(pipeline.hasNext())
+        System.out.println(pipeline.next());
+}
+
+						</code></pre>
+					</section>
+					<section>
+						<h2>Gremlin: design goals</h2>
+						<ul>
+							<li>Data Manipulation Language</li>
+							<li>Query Language</li>
+							<li>Elegant and succint Graph Traversals</li>
+							<li>Extensible</li>
+							<li>Turing complete</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Gremlin: backtrack pattern</h2>
+						<p>pizzas which are liked by Nicola and have an ingredient typical of Trentino</p>
+						<pre class="fragment" data-fragment-index="0"><code data-trim class="groovy">
+g.V('id', 'nicola')
+	.out('likes').as('pizza')
+	.out('contains')
+	.out('typicalOf').has('id', 'trentino')
+	.back('pizza')
+						</code></pre>
+						<pre class="fragment" data-fragment-index="1"><code data-trim class="groovy">
+==>v[oro]
+						</code></pre>
+					</section>
+					<section>
+						<h2>Gremlin: except-retain pattern</h2>
+						<p>pizzas which contains at least one ingredient contained in Boscaiola</p>
+						<pre class="fragment" data-fragment-index="0"><code data-trim class="groovy">
+g.V('id', 'boscaiola').as('pizza')
+	.out('contains')
+	.in('contains')
+	.except('pizza')
+						</code></pre>
+						<pre class="fragment" data-fragment-index="1"><code data-trim class="groovy">
+==>v[oro]
+==>v[diavola]
+==>v[margherita]
+==>v[oro]
+						</code></pre>
+
+<!--
+// TODO: magari un esempio con retain?
+-->
+					</section>
+					<section>
+						<h2>Gremlin: Loop and Path pattern</h2>
+						<p>starting from Nicola, explore all the outgoing relations untill Trentino is found</p>
+						<pre class="fragment" data-fragment-index="0"><code data-trim class="groovy">
+g.v('nicola')
+	.out()
+	.loop(1){it.object.id!='trentino'}
+	.path
+						</code></pre>
+						<pre class="fragment" data-fragment-index="1"><code data-trim class="groovy">
+==>[v[nicola], v[oro], v[spek], v[trentino]]
+==>[v[nicola], v[oro], v[mushroom], v[trentino]]
+==>[v[nicola], v[riccardo], v[boscaiola], v[mushroom], v[trentino]]
+						</code></pre>
+
+					</section>
+					<section>
+						<h2>Gremlin: Split/Merge pattern</h2>
+						<p>from Cristian follow two paths: the pizzas he likes and the pizzas which are liked by his friends</p>
+						<pre class="fragment" data-fragment-index="0"><code data-trim class="groovy">
+g.V('id', 'cristian').copySplit(
+	_().out('likes').id,
+	_().both('friendOf').out('likes').id
+).fairMerge()
+						</code></pre>
+						<pre class="fragment" data-fragment-index="1"><code data-trim class="groovy">
+==>diavola
+==>margherita
+==>oro
+						</code></pre>
+					</section>
+					<section>
+						<h2>Gremlin: Pattern Match pattern</h2>
+						<pre><code data-trim class="groovy">
+t = new Table()
+g.V().as('person')
+	.out('likes')
+	.out('contains').as('ingredient')
+	.table(t)
+						</code></pre>
+						<pre class="fragment" data-fragment-index="0"><code data-trim class="groovy">
+gremlin> t
+==>[person:v[cristian], ingredient:v[salami]]
+==>[person:v[cristian], ingredient:v[tomatoe]]
+==>[person:v[cristian], ingredient:v[cheese]]
+==>[person:v[nicola], ingredient:v[tomatoe]]
+==>[person:v[nicola], ingredient:v[cheese]]
+==>[person:v[nicola], ingredient:v[cheese]]
+==>[person:v[nicola], ingredient:v[spek]]
+==>[person:v[nicola], ingredient:v[mushroom]]
+==>[person:v[riccardo], ingredient:v[cheese]]
+==>[person:v[riccardo], ingredient:v[mushroom]]
+						</code></pre>
+					</section>
+					<section>
+						<h2>Gremlin: other patterns</h2>
+						<ul>
+							<li><b>Flow/Rank</b>: how many times a particular element is traversed over?</li>
+							<li><b>Map/Reduce</b>: group objects under a key (map and shuffle) and then apply some function to those groupings (reduce)</li>
+							<li><b>Tree</b>: useful to return the tree representing the path of graph exploration</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Gremlin: learning</h2>
+						<ul>
+							<li><a href="http://gremlindocs.com/">Gremlin Docs</a></li>
+							<li><a href="http://sql2gremlin.com/">SQL 2 Gremlin</a></li>
+						</ul>
+					</section>
+					<section>
+						<h2>Gremlin: groovy DSL in Java code</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+
+@Test public void pizzaGremlinGroovyTest() throws ScriptException {
+    Graph graph = PizzaGraphFactory.create();
+
+    ScriptEngineManager manager = new ScriptEngineManager();
+    ScriptEngine engine = manager.getEngineByName("gremlin-groovy");
+
+    Bindings bindings = engine.createBindings();
+    bindings.put("graph", graph);
+    bindings.put("nicola", graph.getVertex("nicola"));
+
+    GremlinGroovyPipeline pipeline = (GremlinGroovyPipeline) engine.eval(
+    	"nicola.out().loop(1){it.object.id!='trentino'}.path", bindings);
+
+    while(results.hasNext())
+        System.out.println(results.next());
+
+}
+
+						</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h3>What else?</h3>
+					</section>
+
+					<section>
+						<h2>Tinkerpop: Rexster</h2>
+						<img src="img/tinkerpop-rexster.png"/>
+						<p><a href="https://github.com/tinkerpop/rexster/wiki">Rexster</a> is a graph server</p>
+					</section>
+
+					<section>
+						<h2>Rexster: features</h2>
+						<ul>
+							<li>HTTP REST interface</li>
+							<li>binary interface (RexPro)</li>
+							<li>extensions</li>
+							<li>security</li>
+							<li>The Dog House: web interface providing
+								<ul>
+									<li>graph visualization</li>
+									<li>gremlin console</li>
+									<li>extension manager</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Rexster: demo</h2>
+						<p>rayman@HAL9100 ~/rexster-server-2.6.0 $ ./bin/rexster.sh -s</p>
+						<img src="img/tinkerpop-rexster-screenshot.png" class="stretch"/>
+						<a href="http://localhost:8182/doghouse/main/graph/pizzajug">http://localhost:8182/doghouse/main/graph/pizzajug</a>
+					</section>
+
+					<section>
+						<h2>Tinkerpop: Frames</h2>
+						<img src="img/tinkerpop-frames.png"/>
+						<p><a href="https://github.com/tinkerpop/frames/wiki">Frames</a> exposes any Blueprints graph as a collection of interrelated domain objects (an Hibernate for graphs?!).</p>
+					</section>
+
+					<section>
+						<h2>Tinkerpop: Furnace</h2>
+						<img src="img/tinkerpop-furnace.png"/>
+						<p><a href="https://github.com/tinkerpop/furnace/wiki">Furnace</a> is a collection of graph algorithms running over Blueprints interface</p>
+					</section>
+				</section>
+				<section>
+					<h2>Tinkerpop 3: what's new?</h2>
+					<ul>
+						<li>labeled vertices (more or less as classes)</li>
+						<li>with Java8 streams, Pipes is less important</li>
+						<li>declarative query language (match/pattern match)</li>
+						<li>gremlin is not limited to groovy, can be implemented as a DSL in other languages (Java, python, ...)</li>
+						<li>a focus on On Line Analytical Processing (OLAP) for batch, distributed, graph processing</li>
+					</ul>
+				</section>
+				<section>
+					<section>
+						<img src="img/nerd-question.jpg" class="stretch">
+						<p>Wait a minute: I've heard of Triple Stores...</p>
+					</section>
+					<section>
+						<h2>What is a Triple?</h2>
+						<p>a triple is a statment regarding:
+						<ul>
+							<li>a <i>subject</i> (a URI or a blank node)</li>
+							<li>a <i>property</i> (a URI)</li>
+							<li>a <i>object</i> (a URI, a literal or a blank node)</li>
+						</ul>
+						</p>
+						<img src="img/rdf-triple.png" class="stretch">
+					</section>
+					<section>
+						<h2>Semantic Web Technologies</h2>
+						<ul>
+							<li>Semantic Web is a set of standards and technlogies proposed by <a href="http://www.w3.org">W3C</a> since 2001</li>
+							<li>The vision of Tim Berners Lee is to build a <b>machine readable</b> Web (Web 3.0)</li>
+							<li>The Web as we know is a <b>human readable</b> graph where vertices are documents (identified by URL) and edges are hypertextual links</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Data Models</h2>
+						<table>
+							<tr>
+								<th>RDF/RDF-S</th>
+								<th>PGM</th>
+							</tr>
+							<tr>
+								<td>URI</td>
+								<td>local IDs</td>
+							</tr>
+							<tr>
+								<td>open-world</td>
+								<td>closed-world</td>
+							</tr>
+							<tr>
+								<td>classes and subclasses</td>
+								<td>one big cathegory (V)</td>
+							</tr>
+							<tr>
+								<td>edge inheritance</td>
+								<td>edge properties</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h2>Query Language: SPARQL</h2>
+						<pre class="stretch"><code data-trim>
+@prefix jug: &lt;http://www.jugtaas.org/owl/jug.owl#&gt; .
+@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix po: &lt;http://www.co-ode.org/ontologies/pizza/pizza.owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+SELECT ?pizza
+WHERE {
+	jug:nicola a foaf:Person .
+	jug:nicola jug:likes ?pizza .
+	?pizza a po:Pizza .
+	?pizza po:hasIngredient ?ingredient .
+	?ingredient jug:isTypicalOf ?place .
+	?place rdfs:label "Trentino-Alto Adige"
+}
+						</code></pre>
+						<p class="fragment" data-fragment-index="0">Do you prefer Gremlin?</p>
+					</section>
+					<section>
+							<h2>Data Frameworks</h2>
+							<table>
+							<tr>
+								<th>Semantic Web</th>
+								<th>Tinkerpop</th>
+							</tr>
+							<tr>
+								<td>inference</td>
+								<td>-</td>
+							</tr>
+							<tr>
+								<td>really a standard</td>
+								<td>-</td>
+							</tr>
+							<tr>
+								<td>mature</td>
+								<td>continuously evolving</td>
+							</tr>
+							<tr>
+								<td>-</td>
+								<td>traversal oriented</td>
+							</tr>
+							<tr>
+								<td>???</td>
+								<td>designed to replace<br> your database*</td>
+							</tr>
+							</table>
+							<p class="fragment" data-fragment-index="0">* only for those use case that require a Graph!!!</p>
+					</section>
+					<section>
+						<h2>Vendors</h2>
+						<ul>
+							<li><a href="http://virtuoso.openlinksw.com/">Virtuoso</a> is a modern enterprise grade solution for data access, integration, and relational database management (SQL Tables and/or RDF based Property/Predicate Graphs)</li>
+							<li><a href="http://stardog.com/">Stardog</a> is the easiest, most powerful graph database: search, query, reasoning, and constraints in a lightweight, pure Java system.</li>
+							<li><a href="http://www.blazegraph.com/">Blazegraph</a> is ultra-scalable, high-performance graph database with support for the Blueprints and RDF/SPARQL APIs.</li>
+							<li><a href="http://ontotext.com/products/ontotext-graphdb/">GraphDB™</a> – An Enterprise Triplestore with Meaning</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Also Tinkerpop thinks to Semantic Web Techs</h2>
+						<ul>
+							<li>There is a Tinkerpop Outplementation of <a href="http://rdf4j.org/">SAIL</a></li>
+							<li>which makes virtually possibile use a GraphDB as if it were a Triple Store</li>
+							<li class="fragment" data-fragment-index="0"><b>My opinion</b> is that adding layers over layers isn't a good idea...</li>
+							<li class="fragment" data-fragment-index="1">...but hopefully we'll arrive to the point that choosing between SPARQL or Gremlin will be just a desing choice (without changing the database)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Also Tinkerpop thinks to Semantic Web Techs</h2>
+							<pre><code data-trim class="sql">
+SELECT ?name ?age
+WHERE {
+  ?person v:label "person" .
+  ?person v:name ?name .
+  ?person v:age ?age .
+  ?person e:created ?project .
+    FILTER (?age > 30)
+}
+							</code></pre>
+							<a href="https://github.com/dkuppitz/sparql-gremlin" target="_blank">sparql-gremlin</a>
+					</section>
+					<section>
+						<h2>There could be a newcomer...</h2>
+						<p>...the new standard could also be something else than SPARQL or Gremlin</p>
+
+							<pre><code data-trim class="sql">
+MATCH (node1)-->(node2)
+RETURN node2.propertyA, node2.propertyB
+							</code></pre>
+						<a href="http://www.opencypher.org/" targe="blank">OpenCypher</a> 
+					</section>
+					<section>
+						<h2>What is a Quad-Store?</h2>
+						<ul>
+							<li>a quad-store is a triple store which can store a context for each triple</li>
+							<li>each quad store contains many (named) graphs (one for each context)</li>
+							<li class="fragment" data-fragment-index="0">in Blueprints there exists <a href="https://github.com/tinkerpop/blueprints/wiki/Partition-Implementation">PartitionGraph</a></li>
+							<li class="fragment" data-fragment-index="1">altought with RDF one named graph can also be the subject of a triple...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Further readings</h2>
+						<ul>
+							<li><a href="https://www.w3.org/People/Berners-Lee/Weaving/Overview.html">Weaving the Web - The original design and ultimate destiny of the World Wide Web, by its inventor</a> (1999, Tim Berners Lee)</li>
+							<li><a href="http://www.cs.umd.edu/~golbeck/LBSC690/SemanticWeb.html">The Semantic Web</a> (2001, Tim Berners Lee et al.)</li>
+							<li><a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification</a></li>
+							<li><a href="http://www.w3.org/TR/rdf-schema/">RDF Schema 1.1</a></li>
+							<li><a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a></li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Object Oriented Databases</h2>
+						<ul>
+							<li>a Object Oriented Database is a storage system for which the persistence unit is a Object</li>
+							<li>the first Object Oriented Database was designed in 1985!</li>
+							<li>Also the Object Oriented paradigm is based on graphs</li>
+							<li>Probably the most known standard for Object Oriented Databases id <a href="https://en.wikipedia.org/wiki/Object_Query_Language">OQL</a> which wasn't never fully implemented by any database, but gave inspiration to many Object Relational Mapping languages</li>
+						</ul>
+					</section>
+					<section>
+						<p>Object Oriented Databases are the common ancestor of Graph Databases and Triple Stores!</p>
+						<ul>
+							<li>OrientDB in 2005 was a Object Database (<a href="http://zion-city.blogspot.it/2005/06/orient-odbms-linux-version.html">Orient ODBMS linux version</a>)</li>
+							<li>Virtuoso in 1998 was a Object Database (<a href="https://en.wikipedia.org/wiki/OpenLink_Software">OpenLink Software - History</a>)</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<img src="img/orientdb.png"/>
+					</section>
+					<section>
+						<h2>OrientDB: history</h2>
+						<ul>
+							<li>1998, first project started by Luca Garulli as an Object Oriented DBMS (written in C++)</li>
+							<li>2009, OrientDB rewritten in Java (to encourage user contributions)</li>
+							<li>2011, NuvolaBase: company created in 2011 to develop OrientDB</li>
+							<li>2012, OrientDB 1.0</li>
+							<li>2013, Orient Technologies LTD company</li>
+							<li>2013, OrientDB becomes a distributed service</li>
+							<li>2014, OrientDB 1.7: new relationship engine</li>
+							<li>2015, OrientDB 2.1: performance and stability</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: the project</h2>
+						<ul>
+							<li>hosted on <a href="https://github.com/orientechnologies/orientdb">github</a> (82 contributors)</li>
+							<li>community edition is free (AGPL2)</li>
+							<li>enterprise edition (profiler, live monitor, ...)</li>
+							<li>good documentation</li>
+							<li>courses and certifications</li>
+							<li>very active development team</li>
+							<li>very active community</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Document Model</h2>
+						<ul>
+							<li>lowest level API</li>
+							<li>the document (record) is the storage unit</li>
+							<li>each document has a <i>record id</i> (ORID) assigned by the system</li>
+							<li>each document can have many fields, which are key-value pairs</li>
+							<li>a field can contain a <i>nested document</i>, which hasn't a ORID</li>
+							<li>a field can contain a <i>linked document</i></li>
+						</ul>
+					</section>
+					<section>
+						<h2>Orient DB: datatypes</h2>
+						<ul>
+							<li><b>simple</b>: boolean, numeric, string, dates, binary, ...</li>
+							<li><b>collections</b>: lists, sets, maps (embedded)</li>
+							<li><b>references</b>: LINK, RIDBAG, LINK LIST, LINK SET, LINK MAP</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: classes</h2>
+						<ul>
+							<li>classes are collections of documents</li>
+							<li>classes can be organized in hierarchies</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Document Model: fields</h2>
+						<pre class="stretch"><code data-trim class="java hljs">
+ODatabaseDocumentTx db = new ODatabaseDocumentTx(DATABASE_URL).create();
+
+initSchema(db);
+
+ODocument luke = new ODocument("Person");
+luke.field("name", "Luke");
+luke.field("surname", "Skywalker");
+
+// http://starwars.wikia.com/wiki/Luke_Skywalker
+ODocument lukePhysical = new ODocument()
+        .field("species", "human")
+        .field("gender", "male")
+        .field("height", 1.72) // implicit meters
+        .field("mass", 77) // implicit kg
+        .field("hair", "blonde")
+        .field("eyes", "blue")
+        .field("cybernetics", "Prosthetic right hand");
+
+luke.field("physical", lukePhysical);
+luke.save();
+
+
+						</code></pre>
+					</section>
+					<section>
+						<h2>Document Model: links</h2>
+						<pre><code data-trim class="java hljs">
+
+// http://starwars.wikia.com/wiki/Polis_Massa
+ODocument polisMassa = new ODocument("Place")
+        .field("region", "Outer Rim Territories")
+        .field("sector", "Subterrel sector")
+        .field("system", "Polis Massa System")
+        // ...
+        .save();
+
+luke.field("born", polisMassa);
+luke.save();
+
+db.close();
+						</code></pre>
+					</section>
+
+<!--
+					<section>
+						<pre><code data-trim class="java hljs">
+System.out.println(luke.getIdentity());
+assertNotNull(luke.getIdentity());
+assertNotEquals(ORecordId.EMPTY_RECORD_ID, luke.getIdentity());
+						</code></pre>
+						#9:0
+
+						<pre><code data-trim class="java hljs">
+System.out.println(lukePhysical.getIdentity());
+assertNotNull(lukePhysical.getIdentity());
+assertEquals(ORecordId.EMPTY_RECORD_ID, lukePhysical.getIdentity());
+						</code></pre>
+#-1:-1
+
+						<pre><code data-trim class="java hljs">
+System.out.println(polisMassa.getIdentity());
+assertNotNull(polisMassa.getIdentity());
+assertNotEquals(ORecordId.EMPTY_RECORD_ID, polisMassa.getIdentity());
+						</code></pre>
+#10:0
+
+					</section>
+-->
+					<section>
+						<pre><code data-trim class="java hljs">
+System.out.println(luke);
+Person#9:0 {
+    name: Luke,
+    surname: Skywalker,
+    physical: {
+        species: human,
+        gender: male,
+        height: 1.72,
+        mass: 77,
+        hair: blonde,
+        eyes: blue,
+        cybernetics: Prosthetic right hand
+    },
+    born: #10:0
+}v1
+						</code></pre>
+					</section>
+					<section>
+						<table>
+							<tr>
+								<th>Classes</th>
+								<th>Clusters</th>
+							</tr>
+							<tr>
+								<td><b>logical</b> set of documents</td>
+								<td><b>physical</b> partition of documents</td>
+							</tr>
+							<tr>
+								<td>identified by <b>name</b></td>
+								<td>identified by <b>sequential id</b></td>
+							</tr>
+							<tr>
+								<td>a document <b>may be</b> assigned to one class</td>
+								<td>a document <b>is always</b> assigned to one cluster</td>
+							</tr>
+						</table>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Schema or schemaless?</h2>
+						<ul>
+							<ul>
+								<li>by default Orientdb works in schemaless mode: the type of each field is inferred for each document</li>
+								<li class="fragment" data-fragment-index="0">a schemafull mode can be activated: a record can't be created if each of his fields isn't declared</li>
+								<li class="fragment" data-fragment-index="1">fields constraints can be declared also in schemaless mode: this is called hybrid mode</li>
+								<!-- TODO: considerazioni sulle performance -->
+							</ul>
+						</ul>
+					</section>
+					<section>
+						<h2>Document Model: schema</h2>
+						<pre><code data-trim class="java hljs">
+private void initSchema(ODatabaseDocumentTx db) {
+
+	OClass person = db.getMetadata().getSchema()
+		.createClass("Person");
+
+	person.createProperty("physical", OType.EMBEDDED);
+	person.createProperty("born", OType.LINK);
+}
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Graph Model</h2>
+						<ul>
+							<li>uses Document Model API offering a higher abstraction level</li>
+							<li>fully compliant to Blueprints (2.6.0)</li>
+							<li>each vertex is a document automatically assigned to the class V</li>
+							<li>edges are stored with two links, one for the outgoing vertex, the other for the ingoing vertex</li>
+						</ul>
+					</section>
+					<section>
+						<p>Do you remember the <a href="#/6/2">Blueprints example?</a> It's the same!</p>
+						<pre class="fragment" data-fragment-index="0"><code data-trim class="java hljs">
+Graph graph = new OrientGraph(DATABASE_URL);
+
+Vertex nicola = graph.addVertex("nicola");
+...
+						</code></pre>
+						<p class="fragment" data-fragment-index="0">Just remember the right implementation!</p>
+					</section>
+					<section>
+						<p>Graph Model: something more than PGM</p>
+						<ul>
+							<li>classes are very usefull in real applications</li>
+							<li>class hierarchies (as in RDFS)</li>
+							<li>also edge can be organized in hierarchies of classes (similar to RDFS)</li>
+						</ul>
+					</section>
+					<section>
+						<img src="img/gremlin-toys.jpg"/>
+						<p>You can also play with gremlins!</p>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Object Model</h2>
+						<ul>
+							<li>uses Document Model API offering a higher abstraction level</li>
+							<li>not compatible with Graph API</li>
+							<li>each object is a document</li>
+							<li>references are links</li>
+							<li>Object-Document bindings are automagically generated (via introspection)</li>
+						</ul>
+					</section>
+					<section>
+					<p>Define your domain POJO</p>
+						<pre><code data-trim class="java hljs">
+package com.github.raymanrt.orientdb4jug.orient.starwars;
+
+public class Person {
+    private String name;
+    private String surname;
+
+    private Physical physical;
+    private Place born;
+
+    public Person() {};
+
+    // getters and setters
+}
+						</code></pre>
+						<pre><code data-trim class="java hljs">
+package com.github.raymanrt.orientdb4jug.orient.starwars;
+
+public class Jedi extends Person {
+    public Jedi() {};
+}
+						</code></pre>
+					</section>
+					<section>
+						<p>Setup the environment</p>
+							<pre style="width:100%;"><code data-trim class="java hljs">
+OObjectDatabaseTx db = new OObjectDatabaseTx(DATABASE_URL).create();
+
+db.getEntityManager()
+.registerEntityClasses("com.github.raymanrt.orientdb4jug.orient.starwars");
+
+OClass person = db.getMetadata().getSchema().getClass("Person");
+person.createProperty("physical", OType.EMBEDDED);
+							</code></pre>
+					</section>
+					<section>
+						<p>Work with your data</p>
+							<pre class="stretch"><code data-trim class="java hljs">
+Person padme = db.newInstance(Person.class);
+padme.setName("Padme");
+padme.setSurname("Amidala");
+db.save(padme);
+
+Jedi luke = db.newInstance(Jedi.class);
+luke.setName("Luke");
+luke.setSurname("Skywalker");
+
+Physical physical = new Physical();
+physical.setHair("blonde");
+physical.setEyes("blue");
+luke.setPhysical(physical);
+
+Place polisMassa = db.newInstance(Place.class);
+polisMassa.setName("Polis Massa");
+// ...
+db.save(polisMassa);
+
+luke.setBorn(polisMassa);
+db.save(luke);
+							</code></pre>
+					</section>
+					<section>
+						<p>Work with your data</p>
+							<pre style="width:100%;"><code data-trim class="java hljs">
+
+assertEquals(2, db.countClass("Person"));
+assertEquals(1, db.countClass("Jedi"));
+assertEquals(1, db.countClass("Place"));
+
+ODocument lukeAsDocument = db.getRecordByUserObject(luke, false);
+assertNotNull(lukeAsDocument.getIdentity());
+assertNotEquals(ORecordId.EMPTY_RECORD_ID, lukeAsDocument.getIdentity());
+System.out.println(lukeAsDocument);
+							</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Orient SQL</h2>
+						<ul>
+							<li>Data Definition Language</li>
+							<li>Data Manipolation Language (Query Language)</li>
+							<li>DB Administration Language</li>
+						</ul>
+						<p class="fragment" data-fragment-index="0">inspired by SQL to be friendly</p>
+					</section>
+					<section>
+						<h2>Data Definition Language</h2>
+						<ul>
+							<li>CREATE CLASS Pizza EXTENDS V</li>
+							<li>CREATE PROPERTY Pizza.name STRING</li>
+							<li>ALTER PROPERTY Pizza.name IS NOT NULL</li>
+							<li>...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Constraints</h2>
+						<p>each field can be declared as:</p>
+						<ul>
+							<li>bounded to a min/max value</li>
+							<li>mandatory</li>
+							<li>readonly</li>
+							<li>not null</li>
+							<li>unique</li>
+							<li>satisfiying a given <b>regexp</b></li>
+						</ul>
+					</section>
+					<section>
+						<h2>Data Manipulation Language</h2>
+						<ul>
+							<li>INSERT INTO Pizza SET name = 'marghrita'</li>
+							<li>UPDATE #1:1 SET name = 'margherita'</li>
+							<li>DELETE FROM #1:1</li>
+						</ul>
+					</section>
+					<section>
+						<h2>DBA commands</h2>
+						<ul>
+							<li>CONNECT</li>
+							<li>CREATE DATABASE</li>
+							<li>EXPLAIN</li>
+							<li>GRANT</li>
+							<li>...</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Query Language: SELECT</h2>
+							<pre><code data-trim class="sql">
+SELECT name, @rid, out('likes')
+FROM Person
+WHERE name = 'Nicola'
+							</code></pre>
+							<ul>
+								<li>projections</li>
+								<li>target: a set of documents</li>
+								<li>filter</li>
+							</ul>
+					</section>
+					<section>
+						<h2>Query Language: projections</h2>
+						<ul>
+							<li>fields</li>
+							<li>meta-fields: @rid, @class, ...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Query Language: functions</h2>
+						<ul>
+							<li>aggregators: distinct, max, avg, ...</li>
+							<li>utils: ifnull, sysdate, coalescence, ...</li>
+							<li>collections: first, set, intersect, , ...</li>
+							<li>graph: out, in, both, shortestpath, dijkstra, ...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Query Language: methods</h2>
+						<ul>
+							<li>conversions: asString, asSet, ...</li>
+							<li>string manipulation: append, trim, replace, format, ...</li>
+							<li>collections: [], size, ...</li>
+							<li>others: type, ...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Query Language: FILTERS</h2>
+						<p>operators:<p>
+						<ul>
+							<li>any: =, &lt;&gt;, &gt;, is null, ...</li>
+							<li>string: like, containstext, matches, ...</li>
+							<li>collections: contains, containskey, ...</li>
+							<li>logical operators: AND, OR, NOT</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Query Language: our query</h2>
+
+							<pre><code data-trim class="sql">
+SELECT name
+FROM Pizza
+WHERE
+	'trentino' in out('contains').out('typicalOf').name
+	AND 'nicola' in in('likes').name 
+							</code></pre>
+					</section>
+					<section>
+						<h2>Query Language: variables</h2>
+
+							<pre><code data-trim class="sql">
+SELECT name
+LET $typicalPlace = out('contains').out('typicalOf').name
+FROM Pizza
+WHERE
+	'trentino' in $typicalPlace
+	AND 'nicola' in in('likes').name 
+							</code></pre>
+					</section>
+					<section>
+						<h2>Query Language: nested queries</h2>
+							<pre class="stretch"><code data-trim class="sql">
+SELECT name
+LET $typicalPlace = out('contains').out('typicalOf').name,
+$nicolasFriends = (
+	SELECT FROM Person
+	WHERE 'nicola' in both('friendOf').name
+),
+$pizzaLikers = in('likes')
+FROM Pizza
+WHERE
+	'trentino' in $typicalPlace
+	AND ('nicola' in $pizzaLikers.name OR $nicolasFriends in $pizzaLikers)
+							</code></pre>
+					</section>
+					<section>
+						<h2>Query Language: other</h2>
+						<ul>
+							<li>ORDER BY</li>
+							<li>GROUP BY</li>
+							<li>SKIP/LIMIT</li>
+							<li>...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Query Language: Traverse</h2>
+							<pre><code data-trim class="sql">
+TRAVERSE out('friendOf')
+FROM (SELECT FROM Person WHERE name = 'nicola')
+WHILE $depth <= 3
+STRATEGY BREADTH_FIRST
+							</code></pre>
+					</section>
+					<section>
+						<h2>Query Language: Shortest Path</h2>
+						
+							<pre><code data-trim class="sql">
+SELECT shortestPath(#8:32, #8:10, 'OUT', 'friendOf')
+							</code></pre>
+							<pre><code data-trim class="sql">
+SELECT dijkstra(#8:32, #8:10, 'weightEdgeFieldName', 'OUT')
+							</code></pre>
+					</section>
+					<section>
+						<h2>Query Language</h2>
+						<h3>need some help?</h3>
+						<p>Try with <a href="https://github.com/raymanrt/orientqb">orientqb</a> (inspired by <a href="http://www.jooq.org/">jOOQ</a>)</p>
+						<ul>
+							<li>simple</li>
+							<li>supports and test (almost) all SELECT statements</li>
+							<li>code completion is your friend!</li>
+						</ul>
+					</section>
+					<section>
+					<p>Do you prefer this:</p>
+						<pre><code data-trim class="java hljs">
+Query q = new Query()
+        .select(Projection.ALL)
+        .from("Class")
+        .where(projection("f2").eq(5))
+        .where(projection("f3").lt(0));
+        				</code></pre>
+					<p>Or that?</p>
+						<pre><code data-trim class="java hljs">
+String q = "SELECT *" +
+		"FROM Class" +
+		"WHERE f2 = 5 AND f3 < 0";
+        				</code></pre>						
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Usage Modes</h2>
+					</section>
+					<section>
+						<h2>Usage Mode: client/server</h2>
+						<ul>
+							<li>HTTP REST protocol (JSON based)</li>
+							<li>Binary protocol (for higher performances)</li>
+							<li>Many <a href="http://orientdb.com/docs/last/Programming-Language-Bindings.html" target="_blank">language bindings</a> for both protocols</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Orientdb Studio</h2>
+						<img src="img/orientdb-studio.png"/>
+						<ul>
+							<li>Browse: execute arbitrary commands (as in console)</li>
+							<li>Schema</li>
+							<li>Graph: graphical mode (both for viewing and for editing)</li>
+							<li> ... advanced functions ...</li>
+							<!--
+							<li>Security</li>
+							<li>Functions: stored procedures</li>
+							<li>Database management</li>
+							<li>Profile (only for Enterprise Edition)</li>
+							<li>Auditing: user actions log (only for Enterprise Edition)</li>
+							-->
+						</ul>
+					</section>
+					<section>
+						<h2>Usage Mode: distributed server</h2>
+						<ul>
+							<li>multi-master distributed architecture</li>
+							<li>replica nodes can be created (Read Only mode)</li>
+							<li>a cluster is a physical partition (shard)</li>
+							<li>a class can be split into more clusters, each one distributed in one or more server (but no auto-sharding)</li>
+							<li>synchronization managed by <a href="http://hazelcast.org/">Hazelcast</a></li>
+							<li>consistency: a distributed transaction is committed only when the write quorum has been reached (typically) by the majority</li>
+							<li>indexes are always local</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Usage Mode: embedded</h2>
+						<ul>
+							<li>use OrientDB inside your Java Application</li>
+							<li>avoids network overhead!</li>
+							<li>supports multi-threading access (via connection pool)</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<img class="stretch" src="img/cbook/companies.png">
+						<h2>The CBook</h2>
+						<p>our use case for OrientDB</p>
+						<img class="stretch" src="img/cbook/projects.png">
+					</section>
+					<section>
+						<h2>Data Model</h2>
+						<img class="stretch" src="img/cbook/schema.png">
+					</section>
+					<section>
+						<h2>Character Detail</h2>
+						<img class="stretch" src="img/cbook/romeo-cbook.png">
+					</section>
+					<section>
+					<p>main query:</p>
+						<pre><code data-trim class="sql">
+SELECT name, label, 
+	in('hasActant').out('relatedToChapter') as chapters,
+	in('hasActant').out('locatedIn') as locations,
+	in('hasTag') as contributions,
+FROM #21:6
+						</code></pre>
+					<p>speech cloud:</p>
+						<pre><code data-trim class="sql">
+SELECT localName, $seq.size()
+FROM Agent
+LET $seq = (
+	SELECT FROM Sequence
+	LET $speakers = in('inSequence').out('speaker')
+	WHERE
+		$parent.$current in $speakers AND
+		#21:6 in $speakers
+)
+ORDER BY localName
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: advanced aspects</h2>
+						<img src="img/tafazzi-orient.png"/>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Indexes</h2>
+						<ul>
+							<li>update: manual, automatic</li>
+							<li>cardinality: unique, not unique, dictionary</li>
+							<li>Tree Based Index for range queries</li>
+							<li>Hash Based Index for exact matches</li>
+							<li><a href="https://lucene.apache.org/core/" target="_blank">lucene</a> based: full-text, <a href="http://lucene.apache.org/core/4_0_0/spatial/">geospatial</a></li>
+							<li>custom indexing engines implemented as plugins</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Edge modelling</h2>
+						<img class="stretch" src="img/question-edges.png">
+						<p>how would you model a edge?</p>
+					</section>
+					<section>
+						<h2>OrientDB: Edge modelling</h2>
+						<img class="stretch" src="img/regular-edges.png">
+						<p>regular edges</p>
+					</section>
+					<section>
+						<h2>OrientDB: Edge modelling</h2>
+						<img class="stretch" src="img/lightweight-edges.png">
+						<p>lightweight edges</p>
+					</section>
+					<section>
+						<h2>OrientDB: Edge modelling</h2>
+						<ul>
+							<li>graph API hides the usage of one model or the other</li>
+							<li><b>regular</b> edges are the default</li>
+							<li>with <b>regular</b> edges you can store properties on edges (PGM)</li>
+							<li><b>lightweight</b> edges have more compact representation and guarantee higher performance</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: <a href="http://orientdb.com/docs/last/Concurrency.html">Concurrency</a> and <a href="http://orientdb.com/docs/last/Transactions.html">Transactions</a></h2>
+						<ul>
+							<li>OrientDB is an ACID compliant DBMS</li>
+							<li>Consistency ensured by Multi Version Control System (MVCC)</li>
+							<li>the application should handle the commit failure (concurrent modification)</li>
+							<li>a concurrent modification can happen also when adding/removing edges!</li>
+							<li>transactions can be disabled</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Fetching strategies</h2>
+						<ul>
+							<li>a fetch plan is a strategy to retrieve connected vertices</li>
+							<li>usefull to optimize network calls in client/server mode</li>
+							<li>usefull to serialize documents (JSON)</li>
+							<li>"*:-1": any relation, no limits (fetches the entire tree recursively)</li>
+							<li>"*:-1 friendOf:0": [...] but no friendOf relation</li>
+							<li>friendOf:3": friendOf relation, at maximum depth 3</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Security</h2>
+						<h3>Database security</h3>
+						<ul>
+							<li>database connections are authenticated by <b>user</b> and password</li>
+							<li>users are stored in the reserved class <i>OUser</i> of each db</li>
+							<li>password are stored as hash (<a href="https://en.wikipedia.org/wiki/SHA-2" targe="_blank">SHA-264</a>, <a href="https://en.wikipedia.org/wiki/PBKDF2" targe="_blank">PBKDF2</a>)</li>
+							<li>by default: admin, reader, writer</li>
+							<li>support for SSL connection</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: Security</h2>
+						<h3>Database Roles</h3>
+						<ul>
+							<li>one or more <b>roles</b> (<i>ORole</i>) can be assigned to each user</li>
+							<li>create roles in two modes: allow all but / deny all but</li>
+							<li>extend roles with rules on resources:
+								<ul>
+									<li>database.[class.*|cluster.*]</li>
+									<li>database.[query|command|schema|function|config]</li>
+									<li>...</li>
+								</ul>
+							</li>
+							<li>operations: Create, Read, Update, Delete</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: Security</h2>
+						<h3>record level security</h3>
+						<ul>
+							<li>store which are the users that can access each record</li>
+							<li>the class should extend a reserved class: <i>ORestricted</i></li>
+							<li>each record will inherit four (linkset) fields:
+								<ul>
+									<li><i>allow</i></li>
+									<li><i>allowRead</i></li>
+									<li><i>allowUpdate</i></li>
+									<li><i>allowDelete</i></li>
+								</ul>
+							</li>
+							<li>(Tinkerpop PartitionGraph, RDFS named graphs)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: Security</h2>
+						<h3>database encryption</h3>
+						<ul>
+							<li>it will be implemented in 2.2</li>
+							<li>two algorithms supported: AES, DES</li>
+							<li>it can be enabled at database or at cluster level</li>
+						</ul>
+					</section>
+				</section>
+				<!--
+				<section>
+					<section>
+						<h2>OrientDB: Caching</h2>
+						Nella doc non ho trovato molto di interessante
+					</section>
+				</section>
+				-->
+				<section>
+					<section>
+						<h2>OrientDB: Functions</h2>
+						<ul>
+							<li>are persistent (<i>OFunction</i> reserved class)</li>
+							<li>can be written in OSQL or Javascript</li>
+							<li>can call each other</li>
+							<li>supports recursion</li>
+							<li>have automatic mapping of parameters by position and name</li>
+							<li>plugins can inject new objects to being used by functions</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Hooks (triggers)</h2>
+						<h3>dynamic</h3>
+						<ul>
+							<li>associate a event to an handler</li>
+							<li>events:
+								<ul>
+									<li>when: before / after</li>
+									<li>what: Create / Read / Update / Delete</li>
+								</ul>
+							</li>
+							<li>handlers:
+							<ul>
+								<li><i>OFunction</i></li>
+								<li>java static method</li>
+							</ul>
+							</li>
+							<li>hooks can be assigned to (some) records instences of a class which extends the reserved class <i>OTriggered</i></li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: Hooks (triggers)</h2>
+						<h3>java hooks</h3>
+						<ul>
+							<li>less flexibility for better performance</li>
+							<li>implement the <i>ORecordHook</i> interface or extend the <i>ORecordHookAbstract</i> abstract class</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>OrientDB: Live Queries</h2>
+						<ul>
+							<li>a client subscribes to the database for receiving changes on a given class (or on a subset of records based on a WHERE condition)</li>
+							<li><a href="http://en.wikipedia.org/wiki/Reactive_programming" target="_blank">reactive programming</a> paradigm</li>
+							<li>don't waste resources when data don't change</li>
+							<li>know exactly when data change</li>
+							<li>starting from 2.1</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OrientDB: Live Queries</h2>
+						<img src="img/orientdb-live-queries.png" class="stretch">
+					</section>
+				</section>
+				<section>
+					<h1>Thank you</h1>
+					<img src="img/questions.jpg" class="stretch">
+					<h3>any question?</h3>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
