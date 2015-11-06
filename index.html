@@ -41,9 +41,12 @@
 			<div class="slides">
 				<section>
 					<h2>Graph Database: OrientDB</h2>
-					<h3>a short introduction for JUG TAAS</h3>
+					<h3>a (short) introduction for JUG</h3>
 					<p>
-						<small>Riccardo Tasso (<a href="http://www.twitter.com/riccardotasso">@riccardotasso</a>)</small>
+						<small>Riccardo Tasso (<a href="http://www.twitter.com/riccardotasso" target="_blank">@riccardotasso</a>)</small>
+					</p>
+					<p>
+						<small>JUG Trento - 03/11/2015</small>
 					</p>
 				</section>
 
@@ -61,9 +64,9 @@
 					<section>
 						<h2>Data Models</h2>
 						<ul>
-							<li>Key Value: <a href="http://redis.io/">redis</a>, <a href="http://www.memcached.org/">memcached</a>, <a href="http://hazelcast.com/use-cases/nosql/">hazelcast</a>, ...</li>
-							<li>Column: <a href="http://cassandra.apache.org/">cassandra</a>, <a href="http://hbase.apache.org/">hbase</a>, ...</li>
-							<li>Document: <a href="">mongodb</a> (json based), <a href="http://exist-db.org/">exists-db</a> (xml based)...</li>
+							<li>Key Value: <a href="http://redis.io/" target="_blank">redis</a>, <a href="http://www.memcached.org/" target="_blank">memcached</a>, <a href="http://hazelcast.com/use-cases/nosql/" target="_blank">hazelcast</a>, ...</li>
+							<li>Column: <a href="http://cassandra.apache.org/" target="_blank">cassandra</a>, <a href="http://hbase.apache.org/" target="_blank">hbase</a>, ...</li>
+							<li>Document: <a href="https://www.mongodb.org/" target="_blank">mongodb</a> (json based), <a href="http://exist-db.org/" target="_blank">exists-db</a> (xml based)...</li>
 							<li>tabular, tuple, hosted, multivalue, multimodel, ..., so on and so forth</li>
 							<li>Graph: we'll go straight to them</li>
 						</ul>
@@ -71,10 +74,10 @@
 					<section>
 						<h2>Schema or schemaless?</h2>
 						<ul>
-							<li><a href="http://blog.mongodb.org/post/119945109/why-schemaless">Why Schemaless?</a> (2009, Mongodb Blog)</li>
-							<li><a href="http://blog.mongodb.org/post/119945109/why-schemaless">Stop Claiming that you’re Using a Schemaless Database</a> (2014, jOOQ Blog)</li>
+							<li><a href="http://blog.mongodb.org/post/119945109/why-schemaless" target="_blank">Why Schemaless?</a> (2009, Mongodb Blog)</li>
+							<li><a href="http://blog.mongodb.org/post/119945109/why-schemaless" target="_blank">Stop Claiming that you’re Using a Schemaless Database</a> (2014, jOOQ Blog)</li>
 							<li>
-								<a href="http://martinfowler.com/articles/schemaless/">Schemaless data structures</a> (2013, Martin Fowler)
+								<a href="http://martinfowler.com/articles/schemaless/" target="_blank">Schemaless data structures</a> (2013, Martin Fowler)
 								<ul>
 									<li>Schemaless ⇒ implicit schema = Bad Thing</li>
 									<li>prefer explicit schema...</li>
@@ -120,9 +123,9 @@
 					<section>
 						<h2>Further References</h2>
 						<ul>
-							<li><a href="https://en.wikipedia.org/wiki/NoSQL">[Wikipedia] NoSQL</a></li>
-							<li><a href="https://en.wikipedia.org/wiki/CAP_theorem">[Wikipedia] CAP theorem</a></li>
-							<li><a href="http://dl.acm.org/citation.cfm?doid=1435417.1435432">Vogels, W. (2009). "Eventually consistent". Communications of the ACM 52: 40</a></li>
+							<li><a href="https://en.wikipedia.org/wiki/NoSQL" target="_blank">[Wikipedia] NoSQL</a></li>
+							<li><a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank">[Wikipedia] CAP theorem</a></li>
+							<li><a href="http://dl.acm.org/citation.cfm?doid=1435417.1435432" target="_blank">Vogels, W. (2009). "Eventually consistent". Communications of the ACM 52: 40</a></li>
 						</ul>
 					</section>
 				</section>
@@ -187,7 +190,7 @@
 					<section>
 						<h2>What is a Graph Database?</h2>
 						<p>Any storage system that provides <b>index-free adjacency</b></p>
-						<p align="right"><a href="http://arxiv.org/abs/1004.1001">The Graph Traversal Pattern</a></p>
+						<p align="right"><a href="http://arxiv.org/abs/1004.1001" target="_blank">The Graph Traversal Pattern</a></p>
 						<p align="right">(Marko Rodriguez, Peter Neubauer, 2010)</p>
 					</section>
 					<section>
@@ -249,6 +252,14 @@ WHERE region.name = 'taas'
 						</code></pre>
 							<p class="fragment" data-fragment-index="1">but where are Nicola's friends? :(</p>
 					</section>
+					<section>
+						<h2>Further references</h2>
+						<ul>
+							<li><a href="http://www.slideshare.net/slidarko/graph-databases-trends-in-the-web-of-data/49" target="_blank">Graph Databases: Trends in the Web of Data</a></li>
+							<li><a href="http://thinkaurelius.com/2013/11/01/a-letter-regarding-native-graph-databases/" target="_blank">A Letter Regarding Native Graph Databases</a></li>
+							<li><a href="http://www.pwc.com/us/en/technology-forecast/2015/remapping-database-landscape/public-health-graph--databases.html" target="_blank">The promise of graph databases in public health</a></li>
+						</ul>
+					</section>
 				</section>
 
 				<section>
@@ -256,7 +267,7 @@ WHERE region.name = 'taas'
 						<h2>Tinkerpop: Blueprints</h2>
 						<img src="img/tinkerpop-blueprints.png"/>
 						<ul>
-							<li>Tinkerpop maintains a Property Graph Model (PGM) interface: <a href="https://github.com/tinkerpop/blueprints/wiki">Blueprints</a></li>
+							<li>Tinkerpop maintains a Property Graph Model (PGM) interface: <a href="https://github.com/tinkerpop/blueprints/wiki" target="_blank">Blueprints</a></li>
 							<li>Java API</li>
 							<li>vendor agnostic: a JDBC for graph databases!</li>
 							<li>open source license (BSD)</li>
@@ -378,12 +389,12 @@ public void iterateOverMyFirstGraphTest() {
 						<h2>Blueprints implementations</h2>
 						<ul>
 							<li>TinkerGraph: in-memory</li>
-							<li><a href="http://www.neo4j.com">Neo4j, the World's Leading Graph Database</a></li>
-							<li><a href="http://orientdb.com/orientdb/">OrientDB the 2nd Generation Distributed Graph Database</a></li>
-							<li><a href="http://sparsity-technologies.com/">Sparksee: High-performance human solutions for Extreme Data</a></li>
-							<li><a href="https://bitbucket.org/lambdazen/bitsy/wiki/Home">Bitsy: a small, fast, embeddable, durable in-memory graph database that implements the Blueprints API</a></li>
-							<li><a href="https://www.arangodb.com/">ArangoDB: the multi-model NoSQL database</a></li>
-							<li><a href="http://thinkaurelius.github.io/titan/">Titan: distributed Graph Database</a></li>
+							<li><a href="http://www.neo4j.com" target="_blank">Neo4j, the World's Leading Graph Database</a></li>
+							<li><a href="http://orientdb.com/orientdb/" target="_blank">OrientDB the 2nd Generation Distributed Graph Database</a></li>
+							<li><a href="http://sparsity-technologies.com/" target="_blank">Sparksee: High-performance human solutions for Extreme Data</a></li>
+							<li><a href="https://bitbucket.org/lambdazen/bitsy/wiki/Home" target="_blank">Bitsy: a small, fast, embeddable, durable in-memory graph database that implements the Blueprints API</a></li>
+							<li><a href="https://www.arangodb.com/" target="_blank">ArangoDB: the multi-model NoSQL database</a></li>
+							<li><a href="http://thinkaurelius.github.io/titan/" target="_blank">Titan: distributed Graph Database</a></li>
 							<li>... (mongodb, elasticsearch, jdbc!)</li>
 						</ul>
 					</section>
@@ -402,7 +413,7 @@ public void iterateOverMyFirstGraphTest() {
 						<h2>Blueprints utilities</h2>
 						<ul>
 							<li>input/output (GML, GraphML, GraphSON)</li>
-							<li>outplementations: use your own graph library (e.g. <a href="http://jung.sourceforge.net/">Jung</a>) with a graph database under the hood!</li>
+							<li>outplementations: use your own graph library (e.g. <a href="http://jung.sourceforge.net/" target="_blank">Jung</a>) with a graph database under the hood!</li>
 						</ul>
 					</section>
 				</section>
@@ -411,7 +422,7 @@ public void iterateOverMyFirstGraphTest() {
 					<section>
 						<h2>Tinkerpop: Pipes</h2>
 						<img src="img/tinkerpop-pipes.png"/>
-						<p><a href="https://github.com/tinkerpop/pipes/wiki">Pipes</a> is a <b>lazy</b> <a href="https://en.wikipedia.org/wiki/Dataflow_programming">dataflow framework</a> using <a href="https://en.wikipedia.org/wiki/Kahn_process_networks">process graphs</a></p>
+						<p><a href="https://github.com/tinkerpop/pipes/wiki" target="_blank">Pipes</a> is a <b>lazy</b> <a href="https://en.wikipedia.org/wiki/Dataflow_programming" target="_blank">dataflow framework</a> using <a href="https://en.wikipedia.org/wiki/Kahn_process_networks" target="_blank">process graphs</a></p>
 					</section>
 					<section>
 						<h2>DEMO: Pipes</h2>
@@ -544,7 +555,7 @@ while(pipeline.hasNext()) {
 					<section>
 						<h2>Tinkerpop: Gremlin</h2>
 						<img src="img/tinkerpop-gremlin.png"/>
-						<p><a href="https://github.com/tinkerpop/gremlin/wiki">Gremlin</a> is a graph traversal language</p>
+						<p><a href="https://github.com/tinkerpop/gremlin/wiki" target="_blank">Gremlin</a> is a graph traversal language</p>
 					</section>
 
 					<section>
@@ -578,7 +589,7 @@ gremlin> g.v('nicola').out().loop(1){it.object.id!='trentino'}
 						<ul>
 							<li>Gremlin is a Domain Specific Language</li>
 							<li>for writing pipes to work with property graphs</li>
-							<li>implemented in <a href="http://www.groovy-lang.org/">groovy</a></li>
+							<li>implemented in <a href="http://www.groovy-lang.org/" target="_blank">groovy</a></li>
 							<li>has a interesting library of steps (transform, filter, sideEffect, branch)</li>
 						</ul>
 					</section>
@@ -711,8 +722,8 @@ gremlin> t
 					<section>
 						<h2>Gremlin: learning</h2>
 						<ul>
-							<li><a href="http://gremlindocs.com/">Gremlin Docs</a></li>
-							<li><a href="http://sql2gremlin.com/">SQL 2 Gremlin</a></li>
+							<li><a href="http://gremlindocs.com/" target="_blank">Gremlin Docs</a></li>
+							<li><a href="http://sql2gremlin.com/" target="_blank">SQL 2 Gremlin</a></li>
 						</ul>
 					</section>
 					<section>
@@ -744,13 +755,14 @@ gremlin> t
 
 				<section>
 					<section>
+						<h2>Tinkerpop Family</h2>
 						<h3>What else?</h3>
 					</section>
 
 					<section>
 						<h2>Tinkerpop: Rexster</h2>
 						<img src="img/tinkerpop-rexster.png"/>
-						<p><a href="https://github.com/tinkerpop/rexster/wiki">Rexster</a> is a graph server</p>
+						<p><a href="https://github.com/tinkerpop/rexster/wiki" target="_blank">Rexster</a> is a graph server</p>
 					</section>
 
 					<section>
@@ -773,19 +785,19 @@ gremlin> t
 						<h2>Rexster: demo</h2>
 						<p>rayman@HAL9100 ~/rexster-server-2.6.0 $ ./bin/rexster.sh -s</p>
 						<img src="img/tinkerpop-rexster-screenshot.png" class="stretch"/>
-						<a href="http://localhost:8182/doghouse/main/graph/pizzajug">http://localhost:8182/doghouse/main/graph/pizzajug</a>
+						<a href="http://localhost:8182/doghouse/main/graph/pizzajug" target="_blank">http://localhost:8182/doghouse/main/graph/pizzajug</a>
 					</section>
 
 					<section>
 						<h2>Tinkerpop: Frames</h2>
 						<img src="img/tinkerpop-frames.png"/>
-						<p><a href="https://github.com/tinkerpop/frames/wiki">Frames</a> exposes any Blueprints graph as a collection of interrelated domain objects (an Hibernate for graphs?!).</p>
+						<p><a href="https://github.com/tinkerpop/frames/wiki" target="_blank">Frames</a> exposes any Blueprints graph as a collection of interrelated domain objects (an Hibernate for graphs?!).</p>
 					</section>
 
 					<section>
 						<h2>Tinkerpop: Furnace</h2>
 						<img src="img/tinkerpop-furnace.png"/>
-						<p><a href="https://github.com/tinkerpop/furnace/wiki">Furnace</a> is a collection of graph algorithms running over Blueprints interface</p>
+						<p><a href="https://github.com/tinkerpop/furnace/wiki" target="_blank">Furnace</a> is a collection of graph algorithms running over Blueprints interface</p>
 					</section>
 				</section>
 				<section>
@@ -817,7 +829,7 @@ gremlin> t
 					<section>
 						<h2>Semantic Web Technologies</h2>
 						<ul>
-							<li>Semantic Web is a set of standards and technlogies proposed by <a href="http://www.w3.org">W3C</a> since 2001</li>
+							<li>Semantic Web is a set of standards and technlogies proposed by <a href="http://www.w3.org" target="_blank">W3C</a> since 2001</li>
 							<li>The vision of Tim Berners Lee is to build a <b>machine readable</b> Web (Web 3.0)</li>
 							<li>The Web as we know is a <b>human readable</b> graph where vertices are documents (identified by URL) and edges are hypertextual links</li>
 						</ul>
@@ -900,16 +912,16 @@ WHERE {
 					<section>
 						<h2>Vendors</h2>
 						<ul>
-							<li><a href="http://virtuoso.openlinksw.com/">Virtuoso</a> is a modern enterprise grade solution for data access, integration, and relational database management (SQL Tables and/or RDF based Property/Predicate Graphs)</li>
-							<li><a href="http://stardog.com/">Stardog</a> is the easiest, most powerful graph database: search, query, reasoning, and constraints in a lightweight, pure Java system.</li>
-							<li><a href="http://www.blazegraph.com/">Blazegraph</a> is ultra-scalable, high-performance graph database with support for the Blueprints and RDF/SPARQL APIs.</li>
-							<li><a href="http://ontotext.com/products/ontotext-graphdb/">GraphDB™</a> – An Enterprise Triplestore with Meaning</li>
+							<li><a href="http://virtuoso.openlinksw.com/" target="_blank">Virtuoso</a> is a modern enterprise grade solution for data access, integration, and relational database management (SQL Tables and/or RDF based Property/Predicate Graphs)</li>
+							<li><a href="http://stardog.com/" target="_blank">Stardog</a> is the easiest, most powerful graph database: search, query, reasoning, and constraints in a lightweight, pure Java system.</li>
+							<li><a href="http://www.blazegraph.com/" target="_blank">Blazegraph</a> is ultra-scalable, high-performance graph database with support for the Blueprints and RDF/SPARQL APIs.</li>
+							<li><a href="http://ontotext.com/products/ontotext-graphdb/" target="_blank">GraphDB™</a> – An Enterprise Triplestore with Meaning</li>
 						</ul>
 					</section>
 					<section>
 						<h2>Also Tinkerpop thinks to Semantic Web Techs</h2>
 						<ul>
-							<li>There is a Tinkerpop Outplementation of <a href="http://rdf4j.org/">SAIL</a></li>
+							<li>There is a Tinkerpop Outplementation of <a href="http://rdf4j.org/" target="_blank">SAIL</a></li>
 							<li>which makes virtually possibile use a GraphDB as if it were a Triple Store</li>
 							<li class="fragment" data-fragment-index="0"><b>My opinion</b> is that adding layers over layers isn't a good idea...</li>
 							<li class="fragment" data-fragment-index="1">...but hopefully we'll arrive to the point that choosing between SPARQL or Gremlin will be just a desing choice (without changing the database)</li>
@@ -937,25 +949,25 @@ WHERE {
 MATCH (node1)-->(node2)
 RETURN node2.propertyA, node2.propertyB
 							</code></pre>
-						<a href="http://www.opencypher.org/" targe="blank">OpenCypher</a> 
+						<a href="http://www.opencypher.org/" target="blank">OpenCypher</a> 
 					</section>
 					<section>
 						<h2>What is a Quad-Store?</h2>
 						<ul>
 							<li>a quad-store is a triple store which can store a context for each triple</li>
 							<li>each quad store contains many (named) graphs (one for each context)</li>
-							<li class="fragment" data-fragment-index="0">in Blueprints there exists <a href="https://github.com/tinkerpop/blueprints/wiki/Partition-Implementation">PartitionGraph</a></li>
+							<li class="fragment" data-fragment-index="0">in Blueprints there exists <a href="https://github.com/tinkerpop/blueprints/wiki/Partition-Implementation" target="_blank">PartitionGraph</a></li>
 							<li class="fragment" data-fragment-index="1">altought with RDF one named graph can also be the subject of a triple...</li>
 						</ul>
 					</section>
 					<section>
 						<h2>Further readings</h2>
 						<ul>
-							<li><a href="https://www.w3.org/People/Berners-Lee/Weaving/Overview.html">Weaving the Web - The original design and ultimate destiny of the World Wide Web, by its inventor</a> (1999, Tim Berners Lee)</li>
-							<li><a href="http://www.cs.umd.edu/~golbeck/LBSC690/SemanticWeb.html">The Semantic Web</a> (2001, Tim Berners Lee et al.)</li>
-							<li><a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification</a></li>
-							<li><a href="http://www.w3.org/TR/rdf-schema/">RDF Schema 1.1</a></li>
-							<li><a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a></li>
+							<li><a href="https://www.w3.org/People/Berners-Lee/Weaving/Overview.html" target="_blank">Weaving the Web - The original design and ultimate destiny of the World Wide Web, by its inventor</a> (1999, Tim Berners Lee)</li>
+							<li><a href="http://www.cs.umd.edu/~golbeck/LBSC690/SemanticWeb.html" target="_blank">The Semantic Web</a> (2001, Tim Berners Lee et al.)</li>
+							<li><a href="http://www.w3.org/TR/REC-rdf-syntax/" target="_blank">RDF/XML Syntax Specification</a></li>
+							<li><a href="http://www.w3.org/TR/rdf-schema/" target="_blank">RDF Schema 1.1</a></li>
+							<li><a href="http://www.w3.org/TR/rdf-sparql-query/" target="_blank">SPARQL Query Language for RDF</a></li>
 						</ul>
 					</section>
 				</section>
@@ -966,14 +978,14 @@ RETURN node2.propertyA, node2.propertyB
 							<li>a Object Oriented Database is a storage system for which the persistence unit is a Object</li>
 							<li>the first Object Oriented Database was designed in 1985!</li>
 							<li>Also the Object Oriented paradigm is based on graphs</li>
-							<li>Probably the most known standard for Object Oriented Databases id <a href="https://en.wikipedia.org/wiki/Object_Query_Language">OQL</a> which wasn't never fully implemented by any database, but gave inspiration to many Object Relational Mapping languages</li>
+							<li>Probably the most known standard for Object Oriented Databases id <a href="https://en.wikipedia.org/wiki/Object_Query_Language" target="_blank">OQL</a> which wasn't never fully implemented by any database, but gave inspiration to many Object Relational Mapping languages</li>
 						</ul>
 					</section>
 					<section>
 						<p>Object Oriented Databases are the common ancestor of Graph Databases and Triple Stores!</p>
 						<ul>
-							<li>OrientDB in 2005 was a Object Database (<a href="http://zion-city.blogspot.it/2005/06/orient-odbms-linux-version.html">Orient ODBMS linux version</a>)</li>
-							<li>Virtuoso in 1998 was a Object Database (<a href="https://en.wikipedia.org/wiki/OpenLink_Software">OpenLink Software - History</a>)</li>
+							<li>OrientDB in 2005 was a Object Database (<a href="http://zion-city.blogspot.it/2005/06/orient-odbms-linux-version.html" target="_blank">Orient ODBMS linux version</a>)</li>
+							<li>Virtuoso in 1998 was a Object Database (<a href="https://en.wikipedia.org/wiki/OpenLink_Software" target="_blank">OpenLink Software - History</a>)</li>
 						</ul>
 					</section>
 				</section>
@@ -997,10 +1009,10 @@ RETURN node2.propertyA, node2.propertyB
 					<section>
 						<h2>OrientDB: the project</h2>
 						<ul>
-							<li>hosted on <a href="https://github.com/orientechnologies/orientdb">github</a> (82 contributors)</li>
+							<li>hosted on <a href="https://github.com/orientechnologies/orientdb" target="_blank">github</a> (82 contributors)</li>
 							<li>community edition is free (AGPL2)</li>
 							<li>enterprise edition (profiler, live monitor, ...)</li>
-							<li>good documentation</li>
+							<li>good <a href="http://orientdb.com/docs/last/" target="_blank">documentation</a></li>
 							<li>courses and certifications</li>
 							<li>very active development team</li>
 							<li>very active community</li>
@@ -1462,7 +1474,7 @@ SELECT dijkstra(#8:32, #8:10, 'weightEdgeFieldName', 'OUT')
 					<section>
 						<h2>Query Language</h2>
 						<h3>need some help?</h3>
-						<p>Try with <a href="https://github.com/raymanrt/orientqb">orientqb</a> (inspired by <a href="http://www.jooq.org/">jOOQ</a>)</p>
+						<p>Try with <a href="https://github.com/raymanrt/orientqb" target="_blank">orientqb</a> (inspired by <a href="http://www.jooq.org/" target="_blank">jOOQ</a>)</p>
 						<ul>
 							<li>simple</li>
 							<li>supports and test (almost) all SELECT statements</li>
@@ -1522,7 +1534,7 @@ String q = "SELECT *" +
 							<li>replica nodes can be created (Read Only mode)</li>
 							<li>a cluster is a physical partition (shard)</li>
 							<li>a class can be split into more clusters, each one distributed in one or more server (but no auto-sharding)</li>
-							<li>synchronization managed by <a href="http://hazelcast.org/">Hazelcast</a></li>
+							<li>synchronization managed by <a href="http://hazelcast.org/" target="_blank">Hazelcast</a></li>
 							<li>consistency: a distributed transaction is committed only when the write quorum has been reached (typically) by the majority</li>
 							<li>indexes are always local</li>
 						</ul>
@@ -1539,7 +1551,7 @@ String q = "SELECT *" +
 				<section>
 					<section>
 						<img class="stretch" src="img/cbook/companies.png">
-						<h2>The CBook</h2>
+						<h2>The <a href="http://www.cbook.it" target="_blank">CBook</a></h2>
 						<p>our use case for OrientDB</p>
 						<img class="stretch" src="img/cbook/projects.png">
 					</section>
@@ -1589,7 +1601,7 @@ ORDER BY localName
 							<li>cardinality: unique, not unique, dictionary</li>
 							<li>Tree Based Index for range queries</li>
 							<li>Hash Based Index for exact matches</li>
-							<li><a href="https://lucene.apache.org/core/" target="_blank">lucene</a> based: full-text, <a href="http://lucene.apache.org/core/4_0_0/spatial/">geospatial</a></li>
+							<li><a href="https://lucene.apache.org/core/" target="_blank">lucene</a> based: full-text, <a href="http://lucene.apache.org/core/4_0_0/spatial/" target="_blank">geospatial</a></li>
 							<li>custom indexing engines implemented as plugins</li>
 						</ul>
 					</section>
@@ -1622,7 +1634,7 @@ ORDER BY localName
 				</section>
 				<section>
 					<section>
-						<h2>OrientDB: <a href="http://orientdb.com/docs/last/Concurrency.html">Concurrency</a> and <a href="http://orientdb.com/docs/last/Transactions.html">Transactions</a></h2>
+						<h2>OrientDB: <a href="http://orientdb.com/docs/last/Concurrency.html" target="_blank">Concurrency</a> and <a href="http://orientdb.com/docs/last/Transactions.html" target="_blank">Transactions</a></h2>
 						<ul>
 							<li>OrientDB is an ACID compliant DBMS</li>
 							<li>Consistency ensured by Multi Version Control System (MVCC)</li>
@@ -1652,7 +1664,7 @@ ORDER BY localName
 						<ul>
 							<li>database connections are authenticated by <b>user</b> and password</li>
 							<li>users are stored in the reserved class <i>OUser</i> of each db</li>
-							<li>password are stored as hash (<a href="https://en.wikipedia.org/wiki/SHA-2" targe="_blank">SHA-264</a>, <a href="https://en.wikipedia.org/wiki/PBKDF2" targe="_blank">PBKDF2</a>)</li>
+							<li>password are stored as hash (<a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank">SHA-264</a>, <a href="https://en.wikipedia.org/wiki/PBKDF2" target="_blank">PBKDF2</a>)</li>
 							<li>by default: admin, reader, writer</li>
 							<li>support for SSL connection</li>
 						</ul>
