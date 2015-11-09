@@ -1,7 +1,6 @@
-# Graph Database and OrientDB
-## a (short) introduction
+# Graph Database and OrientDB - a (short) introduction
 
-This presentation is a brief insight on the Graph Database world as I observed in recent years.
+This [presentation](http://raymanrt.github.io/graphdbs4jug) is a brief insight on the Graph Database world as I observed in recent years.
 
 A simplicistic introduction to NOSQL Databases was required, then I tried to explain the [Tinkerpop](http://tinkerpop.incubator.apache.org/) ecosystem. Also if Tinkerpop 2.6 is described I think it's a good way to introduct anyone to the main concepts. In the future more slides may be added, dedicated to Tinkerpop 3. Then I choose [OrientDB](http://orientdb.com/) as example, since it's the Graph Database I used most in the past years. It's quite good and should be considered, also if it's not the most sponsored.
 
